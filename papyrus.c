@@ -39,13 +39,8 @@ void print_lineNum()
 	}
 }
 
-int open()
+int open(char *fileName)
 {
-	clear();
-        // Get the filename from the user
-    	printf("Enter filename to save: ");
-    	scanf("%s", fileName);
-    	getchar(); // Consume the \n so it isn't read into buffer
 	// Print the initial UI
     	clear();
     	printf("       _______\n");
@@ -56,12 +51,13 @@ int open()
     	printf("      1| ");
 	
     	// Open the file in write mode
-    	file = fopen(fileName, "w");
+    	file = fopen(fileName, "r+");
 	
     	if (file == NULL)
     	{
-    	    printf("Error opening file.\n");
-    	    exit(1);
+		clear();
+		printf("Error opening file.\n");
+		exit(1);
     	}
     	return 0;
 }
@@ -93,9 +89,14 @@ void edit()
         fclose(file);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    	open();
+	if (argc != 2 || argv == NULL)
+	{
+		printf("Usage: %s <filename>\n", argv[0]);
+		return 1;
+	}
+    	open(argv[1]);
     	edit();
     	return 0;
 }

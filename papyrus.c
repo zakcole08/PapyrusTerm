@@ -89,7 +89,7 @@ void edit()
 	        if (ch == EOF || ch == 4) // EOF or Ctrl-D to exit the loop
 	        {
 			fprintf(file, "\n");			// newline added to the end of file
-			printf("\n\n---File saved---\n\n");
+			printf("\n\n      ---File saved---\n\n");
 	       		break;
 	        }
 	        else if (ch == '\n')
@@ -110,12 +110,22 @@ void edit()
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2 || argv == NULL)
+	switch(argc)
 	{
-		printf("Usage: %s <filename>\n", argv[0]);
-		return 1;
+		case 1:
+			clear();
+        	        printf("Enter file name: ");
+                	scanf("%s", fileName);
+			getchar();	// Consume trailing \n
+			open(fileName);
+			break;
+		case 2:
+			open(argv[1]);
+			break;
+		default:
+                        printf("Usage: %s <filename>\n", argv[0]);
+                        return 1;
 	}
-    	open(argv[1]);
     	edit();
     	return 0;
 }

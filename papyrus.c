@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define clear() printf("\e[1;1H\e[2J")
 
@@ -50,15 +51,32 @@ int open(char *fileName)
     	printf("       ----------------------------------------------\n");
     	printf("      1| ");
 	
-    	// Open the file in write mode
-    	file = fopen(fileName, "r+");
-	
-    	if (file == NULL)
-    	{
-		clear();
-		printf("Error opening file.\n");
-		exit(1);
-    	}
+	if (access(fileName, F_OK) != 0)
+	{
+		// Create file and open in write mode
+        	file = fopen(fileName, "w");
+	}
+	else
+	{
+		// Open file in read and write mode
+		file = fopen(fileName, "r+");
+		// Print contents of existing file
+		int contents;
+		while (1)
+		{
+			contents = fgetc(file);
+			if (feof(file))
+			{
+				break;
+			}
+			printf("%c", contents);
+			if (contents == '\n')
+			{
+				lineNum++;
+				print_lineNum();
+			}
+		}
+	}
     	return 0;
 }
 
@@ -70,7 +88,8 @@ void edit()
 	
 	        if (ch == EOF || ch == 4) // EOF or Ctrl-D to exit the loop
 	        {
-			printf("\n---File saved---\n\n");
+			fprintf(file, "\n");			// newline added to the end of file
+			printf("\n\n---File saved---\n\n");
 	       		break;
 	        }
 	        else if (ch == '\n')
